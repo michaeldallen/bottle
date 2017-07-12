@@ -2,7 +2,7 @@ from bottle import route, run
 
 
 import apt
-import apt.progress
+import apt.progress.text
 
 @route('/hello')
 def hello():
@@ -23,7 +23,8 @@ def hello():
     cache.upgrade(True)
     # Q: Why does nothing happen?
     # A: You forgot to call commit()!
-    cache.commit(apt.progress.TextFetchProgress(), apt.progress.InstallProgress())
+    ## cache.commit(apt.progress.TextFetchProgress(), apt.progress.InstallProgress())
+    cache.commit()
 
 
     return "<h1>dist-upgrade!</h1>"
