@@ -9,9 +9,9 @@ kill :
 	kill `cat hello_world.pid`
 	rm -fv hello_world.pid
 
-status : 
-	if [ -r hello_world.pid ] ; then \
-		ps --pid `cat hello_world.pid` ; \
+status diag : 
+	@if [ -r hello_world.pid ] ; then \
+		ps -F --pid `cat hello_world.pid` ; \
 	else \
 		echo no PID ; \
 	fi
