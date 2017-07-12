@@ -34,11 +34,6 @@ def hello():
 
 @route('/healthcheck')
 def healthcheck():
-    cache = apt.Cache()
-    cache.update()
-    cache.get_changes()
-    cache.commit()
-
     return "what could possibly go wrong with {}?".format(socket.gethostname())
 
 run(host='0.0.0.0', port=2112, debug=True)
