@@ -18,3 +18,9 @@ status diag :
 
 clean : 
 	rm -fv hello_world.pid
+
+refresh :
+	make kill
+	git pull
+	make bg
+
