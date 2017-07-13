@@ -69,6 +69,13 @@ def healthcheck():
     return rv
 
 
+@route('/')
+def default():
+    rv = []
+    pre(rv, socket.gethostname())
+    return rv
+
+
 run(host='0.0.0.0', port=2112, debug=True)
 
 
