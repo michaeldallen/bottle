@@ -64,8 +64,8 @@ def dist_upgrade():
 @route('/healthcheck')
 def healthcheck():
     rv = []
-    h1(rv, 'what could possibly go wrong with {}?'.format(socket.gethostname()))
-    pre(rv, 'foo')
+    h1(rv, 'healthcheck')
+    pre(rv, 'what could possibly go wrong with {}?'.format(socket.gethostname()))
     return rv
 
 
