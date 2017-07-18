@@ -1,8 +1,18 @@
 from bottle import route, run
+import subprocess
 
 
-import apt
-import apt.progress.text
+#import apt
+#import apt.progress.text
+#
+# after much trial and error, I have concluded that python-apt is:
+# * little used, based on available examples
+# * not interested in providing me with terse output
+# * too little bang for my investment bucks
+# * unlikely to provide long-term leverage due to self-described "unstable" interface
+#
+# mallen - 2017.07.18
+
 
 import socket
 
@@ -23,6 +33,11 @@ def prel(doc, msg):
     doc.append('<pre>')
     doc.extend('\n'.join(msg))
     doc.append('</pre>')
+
+def prel2(doc, msg):
+    doc.append('<pre>')
+    doc.extend(msg)
+    doc.append('</pre>')
     
 
 
@@ -34,30 +49,29 @@ def hello():
     h1(doc, 'Hello World!')
     return doc
 
+@route('/lsb_release')
+def lsb_release():
+    doc = []
+    h1(doc, 'lsb_release -a')
+    try:
+        out = subprocess.check_output(['/usr/bin/lsb_release', '-a'], stderr=subprocess.STDOUT, timeout=5, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        out = e.output
+    prel2(doc, out)
+    return doc
+
+
 
 @route('/dist-upgrade')
 def dist_upgrade():
     doc = []
-    doc2 = []
     h1(doc, 'dist-upgrade!')
 
-    # First of all, open the cache
-    cache = apt.Cache()
-    # Now, lets update the package list
-    doc2.append(str(cache.update()))
-    # We need to re-open the cache because it needs to read the package list
-    doc2.append(str(cache.open(None)))
-    # Now we can do the same as 'apt-get upgrade' does
-    ## cache.upgrade()
-    # or we can play 'apt-get dist-upgrade'
-    doc2.append(str(cache.upgrade(True)))
-    # Q: Why does nothing happen?
-    # A: You forgot to call commit()!
-    ## cache.commit(apt.progress.TextFetchProgress(), apt.progress.InstallProgress())
-    doc2.append(str(cache.commit()))
-
-    prel(doc, doc2)
-
+    try:
+        out = subprocess.check_output(['/usr/bin/apt-get', 'dist-upgrade', '--assume-yes'], stderr=subprocess.STDOUT, timeout=300, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        out = e.output
+    prel2(doc, out)
     return doc
 
 
