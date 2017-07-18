@@ -54,7 +54,7 @@ def lsb_release():
     doc = []
     h1(doc, 'lsb_release -a')
     try:
-        out = subprocess.check_output(['/usr/bin/lsb_release', '-a'], stderr=subprocess.STDOUT, timeout=5, universal_newlines=True)
+        out = subprocess.check_output(['/usr/bin/lsb_release', '-a'], stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         out = e.output
     prel2(doc, out)
@@ -68,11 +68,24 @@ def dist_upgrade():
     h1(doc, 'dist-upgrade!')
 
     try:
-        out = subprocess.check_output(['/usr/bin/apt-get', 'dist-upgrade', '--assume-yes'], stderr=subprocess.STDOUT, timeout=300, universal_newlines=True)
+        out = subprocess.check_output(['/usr/bin/apt-get', 'dist-upgrade', '--assume-yes'], stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         out = e.output
     prel2(doc, out)
     return doc
+
+
+@route('/check-upgrades')
+def healthcheck():
+    rv = []
+    cmd='/usr/bin/apt-get --simulate dist-upgrade'
+    h1(rv, cmd)
+    try:
+        out = subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        out = e.output
+    prel2(rv, out)
+    return rv
 
 
 @route('/healthcheck')
@@ -80,6 +93,7 @@ def healthcheck():
     rv = []
     h1(rv, 'healthcheck')
     pre(rv, 'what could possibly go wrong with {}?'.format(socket.gethostname()))
+
     return rv
 
 
