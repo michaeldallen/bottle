@@ -4,7 +4,11 @@ run fg default :
 
 bg : 
 	date
-	. venv.bottle/bin/activate && nohup python hello_world.py > hello_world.log 2>&1 & echo $$! | tee hello_world.pid
+	if ps -F --pid `cat hello_world.pid` ; then \
+		echo already running with managed PID `cat hello_world.pid` ; \
+	else \
+		. venv.bottle/bin/activate && nohup python hello_world.py > hello_world.log 2>&1 & echo $$! | tee hello_world.pid ; \
+	fi
 	date
 
 kill :
