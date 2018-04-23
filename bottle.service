@@ -1,0 +1,15 @@
+[Unit]                
+Description=bottle
+
+[Service]             
+User=root            
+Group=root           
+WorkingDirectory=/root/bottle
+ExecStart=/usr/bin/make bg
+KillMode=process      
+Restart=on-failure    
+RestartSec=1min       
+
+[Install]             
+WantedBy=multi-user.target 
+
